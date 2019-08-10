@@ -5,17 +5,22 @@ This repo is a C++ implimentation of a Kalman filter for multiple visual object 
 
 ## Classes and Structs
 
-### Tracker
+### TrackerManager
 Methods:
+- readNextFrameDetections() - Reads in next set of detections from file (or buffer)
+- associate() - Associate new frame detections to TrackedObject instances, via message queue.
+- createNewTracks() - Create new TrackedObject instances for unassociated detections. 
+- prune() - Kill TrackedObject instances that have been coasting too long or have left the scene.
 
 Data:
+- newDetections (vector<Detection>) - Storage for new frame detection.
 
 ### TrackedObject
 #### Methods:
 - simulate()
 - timeUpdate()
 - measurementUpdate()
-
+- getState() - Getter function used to access the current state estimate. Used for association and visualization. 
 #### Data:
 - (static) A - State transition matrix
 
