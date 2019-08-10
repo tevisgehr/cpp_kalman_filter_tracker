@@ -1,6 +1,6 @@
 # C++ Kalman Filter Tracker
 
-This repo is a C++ implimentation of a Kalman filter for multiple visual object tracking. The tracker reads in time-stamped bounding boxes from an object detector (such as SSD or Faster-RCNN). Each object is tracked asychronously.
+This repo is a C++ implimentation of a Kalman filter for multiple visual object tracking. The tracker reads in frame-synchronised bounding boxes from an object detector (such as SSD or Faster-RCNN). Each object is tracked asychronously. At each new frame, the tracker manager reads in frame detections and associates them with existing track. Associated detections are sent to corropsonding track threads via an async message queue class. 
 
 
 ## Classes and Structs
