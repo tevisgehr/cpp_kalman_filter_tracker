@@ -13,8 +13,8 @@ Methods:
 - prune() - Kill TrackedObject instances that have been coasting too long or have left the scene.
 
 Data:
-- tracks (vector<TrackedObjects>) - vector of tracked objects
-- newDetections (vector<Detection>) - Storage for new frame detection.
+- tracks (list<TrackedObjects>) - list of tracked objects
+- newDetections (list<Detection>) - Storage for new frame detections.
 - shutdown (bool) - Set true to shutdown the tracker.
 
 ### TrackedObject
