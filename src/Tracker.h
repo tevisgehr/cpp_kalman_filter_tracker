@@ -23,10 +23,15 @@ private:
 
 class TrackerManager{
 public:
+    TrackerManager();
     bool shutdown = false;
     void associate();
+    void createNewTracks();
+    void prune();
+
 private:
     std::list<TrackedObject> tracks;
+    std::list<Detection> newDetections;
 };
 
 #endif

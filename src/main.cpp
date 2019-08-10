@@ -70,13 +70,16 @@ int main(){
         // #########################################################
 
         // 2. Associate detections (measurements) to existing tracks
+        manager.associate();
 
         // 3. Create new tracks from unassociated measurements
+        manager.createNewTracks();
 
         // 4. Prune dead tracks
+        manager.prune();
 
         // 5. Update visuals 
-
+        //TBD//
     
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         ++idx;

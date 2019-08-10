@@ -6,6 +6,7 @@
 
 struct Detection{
     int x1, x2, y1, y2;
+    float x_mid, y_mid;
     int frameId;
 };
 
