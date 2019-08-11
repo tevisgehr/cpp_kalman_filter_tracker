@@ -5,7 +5,7 @@
 #include <sstream>
 #include <thread>
 
-# include "Tracker.h"
+#include "Tracker.h"
 
 std::vector<std::vector<int>> readDataFile(std::string filepath){
     std::vector<std::vector<int>> data;
@@ -59,6 +59,7 @@ int main(){
             }
             frameDetections.push_back(det);
         }
+        manager.setNewDetections(idx,frameDetections);
 
         //print out frameDetections vector --TEST ONLY ########################
         for (auto det : frameDetections){
@@ -71,6 +72,7 @@ int main(){
 
         // 2. Associate detections (measurements) to existing tracks
         manager.associate();
+        // Modifies _newDetections, only unassociated new detections remain
 
         // 3. Create new tracks from unassociated measurements
         manager.createNewTracks();

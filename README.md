@@ -13,13 +13,13 @@ Methods:
 - prune() - Kill TrackedObject instances that have been coasting too long or have left the scene.
 
 Data:
-- tracks (list<TrackedObjects>) - list of tracked objects
-- newDetections (list<Detection>) - Storage for new frame detections.
+- _tracks (list< shared_ptr<TrackedObjects >) - list of tracked objects
+- _newDetections (list< shared_ptr<Detection> >) - Storage for new frame detections.
 - shutdown (bool) - Set true to shutdown the tracker.
 
 ### TrackedObject
 #### Methods:
-- simulate()
+- run()
 - timeUpdate()
 - measurementUpdate()
 - getState() - Getter function used to access the current state estimate. Used for association and visualization. 
