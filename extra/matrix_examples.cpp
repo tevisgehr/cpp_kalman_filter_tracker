@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Eigen/Dense"
+#include "../src/Eigen/Dense"
 
 
 int main(){
@@ -29,9 +29,14 @@ int main(){
     std::cout << out << std::endl;
     std::cout << std::endl;
 
+    std::cout << out(0,0) << std::endl;
+    std::cout << out.size() << std::endl;
+
     Eigen::MatrixXd t(3,1);
     t << 1,2,3;
     std::cout << t.transpose() << std::endl;
     std::cout << std::endl;
+
+
 }
 

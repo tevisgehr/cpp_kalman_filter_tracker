@@ -30,6 +30,23 @@ void TrackerManager::associate(){
     cout_mtx.lock();
     std::cout<<"Running associate()."<<std::endl;
     cout_mtx.unlock();
+
+    for (auto det: _newDetections){
+            cout_mtx.lock();
+            std::cout<<"!!!Detection!!!: "<<det->x_mid<<","<<det->y_mid<<std::endl;
+            cout_mtx.unlock();
+        for (auto track: _tracks){
+            cout_mtx.lock();
+            std::cout<<"!!!Track!!!: "<<track->_id<<std::endl;
+            cout_mtx.unlock();
+            
+            float distance = track->measureDistance(det);
+            
+            cout_mtx.lock();
+            std::cout<<"Measured distance: "<< distance <<std::endl;
+            cout_mtx.unlock();
+        }
+    }
 }
 
 void TrackerManager::createNewTracks(){
@@ -40,6 +57,7 @@ void TrackerManager::createNewTracks(){
     for (auto &newDet: _newDetections){
         // For each remaining unassociated detection, start a new track
         TrackedObject newTrack(newDet);
+        _tracks.push_back(std::make_shared<TrackedObject>(newTrack));
         _threads.emplace_back(std::thread(&TrackedObject::run, newTrack));
     }
 }

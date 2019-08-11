@@ -23,14 +23,14 @@ Data:
 - run()
 - timeUpdate()
 - measurementUpdate()
-- getState() - Getter function used to access the current state estimate. Used for association and visualization. 
+- getStateEstimate() - Getter function used to access the current state estimate. Used for association and visualization. 
+- measureDistance() - Returns the distance between its current location estimate and an incoming Detection object.
 #### Data:
-- A Eigen::MatrixXd (2x2)) - State transition matrix (static) 
-- H Eigen::MatrixXd (2x2)) - Measurement matrix (static) 
-
-- state (enum State) - 'init', 'active', 'coast', or 'terminated' 
-- X (Eigen::MatrixXd (2x2)) - State estimate matrix [[x,y],[v_x,v_y]] 
-- P (Eigen::MatrixXd (2x2)) - Error covatiance matrix
+- _A Eigen::MatrixXd (2x2)) - State transition matrix (static) 
+- _H Eigen::MatrixXd (2x2)) - Measurement matrix (static) 
+- _state (enum State) - 'init', 'active', 'coast', or 'terminated' 
+- _X (Eigen::MatrixXd (2x2)) - State estimate matrix [[x,y],[v_x,v_y]] 
+- _P (Eigen::MatrixXd (2x2)) - Error covatiance matrix
 
 ### Detection(struct)
 This struct holds the information that has been passed into the program from the detector. Each object represents a single detection.
