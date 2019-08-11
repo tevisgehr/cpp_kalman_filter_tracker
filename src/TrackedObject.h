@@ -3,15 +3,29 @@
 
 #include <iostream>
 #include <thread>
+#include <deque>
 
 #include "Eigen/Dense"
 
-extern std::mutex cout_mtx;
+extern std::mutex cout_mtx_;
 
 struct Detection{
     int x1, x2, y1, y2;
     float x_mid, y_mid;
     int frameId;
+};
+
+template <class T>
+class MessageQueue
+{
+public:
+    T receive();
+    void send(T &&msg);
+
+private:
+    std::mutex _mutex;
+    std::condition_variable _cond;
+    std::deque<T> _queue;
 };
 
 class TrackedObject{
@@ -28,6 +42,9 @@ public:
     void run(); // Main run loop to be activated in thread started by manager
     std::vector<float> getStateEstimate(); //Getter function returns {x, y, v_x, v_y} for track.
     float measureDistance(std::shared_ptr<Detection>);
+
+    MessageQueue<std::shared_ptr<Detection>> _detectionQueue;
+    void sendDetection(std::shared_ptr<Detection> &);
 
 private:
     static int _idCount;   // Static member increments in constructor and ensures unique _id for each object

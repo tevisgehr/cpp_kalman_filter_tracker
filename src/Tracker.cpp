@@ -8,9 +8,9 @@
 TrackerManager::TrackerManager(){}
 
 void TrackerManager::setNewDetections(int idx, std::vector<std::vector<int>> incomingFrameDetections){
-    cout_mtx.lock();
+    cout_mtx_.lock();
     std::cout<<"Running setNewDetections()."<<std::endl;
-    cout_mtx.unlock();
+    cout_mtx_.unlock();
 
     _newDetections.clear();
     for (auto &det: incomingFrameDetections){
@@ -27,43 +27,51 @@ void TrackerManager::setNewDetections(int idx, std::vector<std::vector<int>> inc
 }
 
 void TrackerManager::associate(){
-    cout_mtx.lock();
+    cout_mtx_.lock();
     std::cout<<"Running associate()."<<std::endl;
-    cout_mtx.unlock();
-
-    for (auto det: _newDetections){
-            cout_mtx.lock();
+    cout_mtx_.unlock();
+    int i = 0;
+    for (auto &det: _newDetections){
+            cout_mtx_.lock();
             std::cout<<"!!!Detection!!!: "<<det->x_mid<<","<<det->y_mid<<std::endl;
-            cout_mtx.unlock();
-        for (auto track: _tracks){
-            cout_mtx.lock();
+            cout_mtx_.unlock();
+        int j = 0;
+        for (auto &track: _tracks){
+            cout_mtx_.lock();
             std::cout<<"!!!Track!!!: "<<track->_id<<std::endl;
-            cout_mtx.unlock();
+            cout_mtx_.unlock();
             
             float distance = track->measureDistance(det);
-            
-            cout_mtx.lock();
+            cout_mtx_.lock();
             std::cout<<"Measured distance: "<< distance <<std::endl;
-            cout_mtx.unlock();
+            cout_mtx_.unlock();
+
+            if (distance <= _assocationDistanceThreshold){
+                track->sendDetection(det);
+                // _newDetections.remove(det);    
+            }
+
+            ++j;
         }
+        ++i;
     }
 }
 
 void TrackerManager::createNewTracks(){
-    cout_mtx.lock();
+    cout_mtx_.lock();
     std::cout<<"Running createNewTracks()."<<std::endl;
-    cout_mtx.unlock();
+    cout_mtx_.unlock();
 
     for (auto &newDet: _newDetections){
         // For each remaining unassociated detection, start a new track
-        TrackedObject newTrack(newDet);
-        _tracks.push_back(std::make_shared<TrackedObject>(newTrack));
+        std::shared_ptr<TrackedObject> newTrack = std::make_shared<TrackedObject>(newDet);
+        _tracks.push_back(newTrack);
         _threads.emplace_back(std::thread(&TrackedObject::run, newTrack));
     }
 }
 
 void TrackerManager::prune(){
-    cout_mtx.lock();
+    cout_mtx_.lock();
     std::cout<<"Running prune()."<<std::endl;
-    cout_mtx.unlock();
+    cout_mtx_.unlock();
 }

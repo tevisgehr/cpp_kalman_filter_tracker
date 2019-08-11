@@ -6,17 +6,21 @@ This repo is a C++ implimentation of a Kalman filter for multiple visual object 
 ## Classes and Structs
 
 ### TrackerManager
-Methods:
+#### Methods:
 - setNewDetections() - Reads in next set of detections from file (or internal buffer)
 - associate() - Associate new frame detections to TrackedObject instances, via message queue.
 - createNewTracks() - Create new TrackedObject instances for unassociated detections. 
 - prune() - Kill TrackedObject instances that have been coasting too long or have left the scene.
 
-Data:
+#### Data:
 - _threads (std::vector< std::thread >) - Vector of threads for each TrackedObject instance
 - _tracks (list< shared_ptr<TrackedObjects >) - list of tracked objects
 - _newDetections (list< shared_ptr<Detection> >) - Temporary storage for new frame detections
 - _shutdown (bool) - Set true to shutdown the tracker
+
+Settings (constants) :
+- _assocationDistanceThreshold (float) - max distance between a track state and new detection that will resut in a positive association.
+- _maxCoastCount (int) - number of coasted frames allowed before a track is killed by prune()
 
 ### TrackedObject
 #### Methods:
@@ -52,6 +56,6 @@ This class impliments an asychronous message queue to pass detection objects bet
 - receive()
 
 #### Data:
-_mutex (std::mutex)
-_cond (std::condition_variable)
-_queue (std::deque<T>)
+- _mutex (std::mutex)
+- _cond (std::condition_variable)
+- _queue (std::deque<T>)

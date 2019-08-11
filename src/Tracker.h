@@ -9,20 +9,7 @@
 
 #include "TrackedObject.h"
 
-extern std::mutex cout_mtx;
-
-template <class T>
-class MessageQueue
-{
-public:
-    T receive();
-    void send(T &&msg);
-
-private:
-    std::mutex _mutex;
-    std::condition_variable _cond;
-    std::deque<T> _queue;
-};
+extern std::mutex cout_mtx_;
 
 class TrackerManager{
 public:
@@ -34,12 +21,15 @@ public:
     void createNewTracks();
     void prune();
 
+    // ################### Settings ###################
+    const float _assocationDistanceThreshold = 10;
+    const int _maxCoastCount = 3;
+    // ################################################
 
 private:
     std::vector<std::thread> _threads;                       // Threads for the TrackedObjects to run in
     std::list<std::shared_ptr<TrackedObject>> _tracks;       // List of shared_pts to tracks. List instead of vector to support easy Insertion and Deletion
     std::list<std::shared_ptr<Detection>> _newDetections;    // List of shared_pts to detections
-
 };
 
 #endif
