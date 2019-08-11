@@ -9,6 +9,7 @@
 
 #include "TrackedObject.h"
 
+extern std::mutex cout_mtx;
 
 template <class T>
 class MessageQueue

@@ -1,16 +1,16 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <mutex>
 
 #include "Tracker.h"
-// #include "cout_mtx_.h"
 
 TrackerManager::TrackerManager(){}
 
 void TrackerManager::setNewDetections(int idx, std::vector<std::vector<int>> incomingFrameDetections){
-    // cout_mtx_::m.lock();
+    cout_mtx.lock();
     std::cout<<"Running setNewDetections()."<<std::endl;
-    // cout_mtx_::m.unlock();
+    cout_mtx.unlock();
 
     _newDetections.clear();
     for (auto &det: incomingFrameDetections){
@@ -27,15 +27,15 @@ void TrackerManager::setNewDetections(int idx, std::vector<std::vector<int>> inc
 }
 
 void TrackerManager::associate(){
-    // cout_mtx_::m.lock();
+    cout_mtx.lock();
     std::cout<<"Running associate()."<<std::endl;
-    // cout_mtx_::m.unlock();
+    cout_mtx.unlock();
 }
 
 void TrackerManager::createNewTracks(){
-    // cout_mtx_::m.lock();
+    cout_mtx.lock();
     std::cout<<"Running createNewTracks()."<<std::endl;
-    // cout_mtx_::m.unlock();
+    cout_mtx.unlock();
 
     for (auto &newDet: _newDetections){
         // For each remaining unassociated detection, start a new track
@@ -45,7 +45,7 @@ void TrackerManager::createNewTracks(){
 }
 
 void TrackerManager::prune(){
-    // cout_mtx_::m.lock();
+    cout_mtx.lock();
     std::cout<<"Running prune()."<<std::endl;
-    // cout_mtx_::m.unlock();
+    cout_mtx.unlock();
 }

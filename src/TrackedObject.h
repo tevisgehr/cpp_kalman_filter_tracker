@@ -4,9 +4,9 @@
 #include <iostream>
 #include <thread>
 
-// #include "Tracker.h"
 #include "Eigen/Dense"
 
+extern std::mutex cout_mtx;
 
 struct Detection{
     int x1, x2, y1, y2;

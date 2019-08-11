@@ -7,6 +7,8 @@
 
 #include "Tracker.h"
 
+std::mutex cout_mtx;
+
 std::vector<std::vector<int>> readDataFile(std::string filepath){
     std::vector<std::vector<int>> data;
     std::ifstream file(filepath);
