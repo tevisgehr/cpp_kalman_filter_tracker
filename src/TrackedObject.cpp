@@ -23,3 +23,6 @@ void TrackedObject::run(){
 
     }
 }
+
+void TrackedObject::timeUpdate(){}
+void TrackedObject::measurementUpdate(){}

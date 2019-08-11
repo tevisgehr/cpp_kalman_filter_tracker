@@ -27,11 +27,13 @@ private:
 class TrackerManager{
 public:
     TrackerManager();
-    bool shutdown = false;
+    bool _shutdown = false;
+
+    void setNewDetections(int, std::vector<std::vector<int>>);
     void associate();
     void createNewTracks();
     void prune();
-    void setNewDetections(int, std::vector<std::vector<int>>);
+
 
 private:
     std::vector<std::thread> _threads;                       // Threads for the TrackedObjects to run in

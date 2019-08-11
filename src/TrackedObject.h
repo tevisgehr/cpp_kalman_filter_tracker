@@ -24,13 +24,21 @@ public:
 
     TrackedObject(std::shared_ptr<Detection>);
     void run(); // Main run loop to be activated in thread started by manager
+    std::vector<float> getStateEstimate(); //Getter function returns {x, y, v_x, v_y} for track.
 
 private:
     static int _idCount;   // Static member increments in constructor and ensures unique _id for each object
     const int _id;         // Unique constant id for the object
-    
+
+    static Eigen::MatrixXd A; //State transition matrix (static)
+    static Eigen::MatrixXd H; //Measurement matrix (static)
+
     State state;
     Eigen::MatrixXd X;
+    Eigen::MatrixXd P;
+
+    void timeUpdate();
+    void measurementUpdate();
 
 
 };

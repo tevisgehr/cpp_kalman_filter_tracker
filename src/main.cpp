@@ -48,7 +48,7 @@ int main(){
 
     // Main loop
     int idx = 0;
-    while (!manager.shutdown){
+    while (!manager._shutdown){
 
         // 1. Read in frame detections
         std::vector<std::vector<int>> frameDetections;
