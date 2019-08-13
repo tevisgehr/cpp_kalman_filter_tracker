@@ -30,37 +30,46 @@ void TrackerManager::associate(){
     cout_mtx_.lock();
     std::cout<<"Running associate()."<<std::endl;
     cout_mtx_.unlock();
-    int i = 0;
-    for (auto &det: _newDetections){
-            cout_mtx_.lock();
-            std::cout<<"!!!Detection!!!: "<<det->x_mid<<","<<det->y_mid<<std::endl;
-            cout_mtx_.unlock();
-        int j = 0;
-        for (auto &track: _tracks){
-            track->_associated = false;
+
+    for (int i_track = 0; i_track < _tracks.size(); ++i_track){
+        auto &track = _tracks[i_track];
+
+        if (track->getState() != terminated){
             cout_mtx_.lock();
             std::cout<<"!!!Track!!!: "<<track->_id<<std::endl;
             cout_mtx_.unlock();
             
-            float distance = track->measureDistance(det);
-            cout_mtx_.lock();
-            std::cout<<"Measured distance: "<< distance <<std::endl;
-            cout_mtx_.unlock();
+            bool track_associated = false;
 
-            if (distance <= _assocationDistanceThreshold){
-                det->associated = true;
-                track->_associated = true;
-                track->sendDetection(det);
+            for (int i_det = 0; i_det < _newDetections.size(); ++i_det){
+                auto &det = _newDetections[i_det];
                 cout_mtx_.lock();
-                std::cout<<" ********Detection associated! "<<std::endl;
-                cout_mtx_.unlock();    
-                break;
+                std::cout<<"!!!Detection!!!: "<<det->x_mid<<","<<det->y_mid<<std::endl;
+                cout_mtx_.unlock();
 
+                float distance = track->measureDistance(det);
+                cout_mtx_.lock();
+                std::cout<<"Measured distance: "<< distance <<std::endl;
+                cout_mtx_.unlock();
+
+                if (distance <= _assocationDistanceThreshold){
+                    det->associated = true;
+                    track->sendDetection(det);
+                    cout_mtx_.lock();
+                    std::cout<<" *****Detection "<<i_det<<" associated to Track " <<i_track<<std::endl;
+                    cout_mtx_.unlock();    
+                    track_associated = true;
+                    break;
+                }
             }
 
-            ++j;
+            if (!track_associated){
+                cout_mtx_.lock();
+                std::cout<<" ********Track NOT associated! Sending nullptr..."<<std::endl;
+                cout_mtx_.unlock();  
+                track->sendDetection(nullptr);
+            }
         }
-        ++i;
     }
 }
 
@@ -77,10 +86,4 @@ void TrackerManager::createNewTracks(){
             _threads.emplace_back(std::thread(&TrackedObject::run, newTrack));
         }
     }
-}
-
-void TrackerManager::prune(){
-    cout_mtx_.lock();
-    std::cout<<"Running prune()."<<std::endl;
-    cout_mtx_.unlock();
 }

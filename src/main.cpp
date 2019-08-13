@@ -29,7 +29,7 @@ std::vector<std::vector<int>> readDataFile(std::string filepath){
 
 int main(){
     // Open connection to file, read read detections into 'data' vector
-    std::string filepath = "../data/test_data2.txt";
+    std::string filepath = "../data/test_data1.txt";
     std::vector<std::vector<int>> data = readDataFile(filepath);
 
     // //print out data vector --TEST ONLY ########################
@@ -79,9 +79,6 @@ int main(){
 
         // 3. Create new tracks from unassociated measurements
         manager.createNewTracks();
-
-        // 4. Prune dead tracks
-        manager.prune();
 
         // 5. Update visuals 
         //TBD//

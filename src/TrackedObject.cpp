@@ -46,18 +46,34 @@ TrackedObject::TrackedObject(std::shared_ptr<Detection> newDet) : _id(_idCount) 
 void TrackedObject::run(){
     while (true){
         cout_mtx_.lock();
-        std::cout<<"Receiving message..." << std::endl;
+        std::cout<<"Object ID:"<<_id<<" Main loop. Receiving message..." << std::endl;
         cout_mtx_.unlock();
 
         auto newDetection = _detectionQueue.receive();
-        cout_mtx_.lock();
-        std::cout<<_id<<" received Message!!!!! det at: ("<<newDetection->x_mid<<","<<newDetection->y_mid<<")"<< std::endl;
-        cout_mtx_.unlock();
 
-        cout_mtx_.lock();
-        std::cout<<"Object ID:"<<_id<<" Main loop." << std::endl;
-        cout_mtx_.unlock();
+        if (newDetection == nullptr){
+            _state = coast;
+            ++_coastedFrames;
 
+            cout_mtx_.lock();
+            std::cout<<"Track #"<<_id<<" received Message!!!!! nullptr... coasting. _coastedFrames: "<< _coastedFrames << std::endl;
+            cout_mtx_.unlock();
+        }
+        else {
+            _state = active;
+            _coastedFrames = 0;
+
+            cout_mtx_.lock();
+            std::cout<<"Track #"<<_id<<" received Message!!!!! det at: ("<<newDetection->x_mid<<","<<newDetection->y_mid<<")"<< std::endl;
+            cout_mtx_.unlock();
+        }
+
+        if (_coastedFrames > _maxCoastCount){
+            _state = terminated;
+            cout_mtx_.lock();
+            std::cout<<"Track #"<<_id<<" Terminated."<< std::endl;
+            cout_mtx_.unlock();
+        }
     }
 }
 

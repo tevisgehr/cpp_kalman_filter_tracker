@@ -16,6 +16,12 @@ struct Detection{
     bool associated = false;
 };
 
+enum State{
+    init,
+    active,
+    coast,
+    terminated};
+
 template <class T>
 class MessageQueue
 {
@@ -31,24 +37,20 @@ private:
 
 class TrackedObject{
 public:
-    enum State{
-        init,
-        active,
-        coast,
-        terminated};
-
     const int _id;         // Unique constant id for the object
+
+    // ################### Settings ###################
+    const int _maxCoastCount = 3;
+    // ################################################
 
     TrackedObject(std::shared_ptr<Detection>);
     void run(); // Main run loop to be activated in thread started by manager
     std::vector<float> getStateEstimate(); //Getter function returns {x, y, v_x, v_y} for track.
+    State getState(){return _state;}
     float measureDistance(std::shared_ptr<Detection>);
 
     MessageQueue<std::shared_ptr<Detection>> _detectionQueue;
-    // void sendDetection(std::shared_ptr<Detection> &);
     void sendDetection(std::shared_ptr<Detection>);
-
-    bool _associated = false;
 
 private:
     static int _idCount;   // Static member increments in constructor and ensures unique _id for each object
@@ -56,13 +58,14 @@ private:
     static Eigen::MatrixXd _A; //State transition matrix (static)
     static Eigen::MatrixXd _H; //Measurement matrix (static)
 
-    State _state;
+    State _state = init;
+    int _coastedFrames = 0;
+
     Eigen::MatrixXd _X;
     Eigen::MatrixXd _P;
 
     void timeUpdate();
     void measurementUpdate();
-
 
 };
 
