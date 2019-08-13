@@ -33,16 +33,16 @@ int main(){
     std::vector<std::vector<int>> data = readDataFile(filepath);
 
     // //print out data vector --TEST ONLY ########################
-
-    for (auto row : data){
-        for (auto num : row ){
-            std::cout << num << ' ';
-        }
-        std::cout<<std::endl;
-    }
+    // for (auto row : data){
+    //     for (auto num : row ){
+    //         std::cout << num << ' ';
+    //     }
+    //     std::cout<<std::endl;
+    // }
+    // std::cout<<"data.size() : "<<data.size()<<std::endl;
     // // #########################################################
         
-    std::cout<<"data.size() : "<<data.size()<<std::endl;
+
 
     // Instantiate TrackerManager
     TrackerManager manager;
@@ -85,8 +85,11 @@ int main(){
 
         // 5. Update visuals 
         //TBD//
-    
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        std::cout<<" ###########################END OF MAIN LOOP "<<idx<< std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        
         ++idx;
     }
 }

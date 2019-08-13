@@ -49,7 +49,6 @@ TrackedObject::TrackedObject(std::shared_ptr<Detection> newDet) : _id(_idCount) 
 
 void TrackedObject::run(){
     while (true){
-        // std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         cout_mtx_.lock();
         std::cout<<"Receiving message..." << std::endl;
         cout_mtx_.unlock();

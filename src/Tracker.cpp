@@ -50,9 +50,9 @@ void TrackerManager::associate(){
                 det->associated = true;
                 track->sendDetection(det);
                 cout_mtx_.lock();
-                std::cout<<" ********REMOVING! _newDetections.size()"<<_newDetections.size() <<std::endl;
+                std::cout<<" ********Detection associated! "<<std::endl;
                 cout_mtx_.unlock();    
-                std::cout<<" ********REMOVED! _newDetections.size()"<<_newDetections.size() <<std::endl;
+
             }
 
             ++j;
