@@ -55,14 +55,14 @@ public:
 private:
     static int _idCount;   // Static member increments in constructor and ensures unique _id for each object
 
-    static Eigen::MatrixXd _A; //State transition matrix (static)
-    static Eigen::MatrixXd _H; //Measurement matrix (static)
+    static Eigen::Matrix4f _A; //State transition matrix (static)
+    static Eigen::Matrix4f _H; //Measurement matrix (static)
 
     State _state = init;
     int _coastedFrames = 0;
 
-    Eigen::MatrixXd _X;
-    Eigen::MatrixXd _P;
+    Eigen::Matrix2f _X;
+    Eigen::Matrix2f _P;
 
     void timeUpdate();
     void measurementUpdate();

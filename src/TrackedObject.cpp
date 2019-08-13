@@ -7,6 +7,26 @@
 
 int TrackedObject::_idCount = 0;
 
+//Initialize state transition matrix
+Eigen::Matrix4f TrackedObject::_A = [] {
+    Eigen::Matrix4f tmp;
+    tmp <<  1,0,1,0,
+            0,1,0,1,
+            0,0,1,0,
+            0,0,0,1;
+    return tmp;
+}();
+
+//Initialize measurement matrix
+Eigen::Matrix4f TrackedObject::_H = [] {
+    Eigen::Matrix4f tmp;
+    tmp <<  1,0,0,0,
+            0,1,0,0,
+            0,0,0,0,
+            0,0,0,0;
+    return tmp;
+}();
+
 template <typename T>
 T MessageQueue<T>::receive()
 {
