@@ -47,7 +47,7 @@ This struct holds the information that has been passed into the program from the
 - x_mid (float) - x location of the mid-point of the detection bounding box
 - y_mid (float) - y location of the mid-point of the detection bounding box
 - frameID (int) - Frame number
-
+- associated (bool) - False by default. Whether or not the detection has been associated with a track.
 ### MessageQueue
 This class impliments an asychronous message queue to pass detection objects between the Tracker thread and each of the TrackedObject threads. 
 

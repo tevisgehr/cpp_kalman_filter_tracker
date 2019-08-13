@@ -47,8 +47,12 @@ void TrackerManager::associate(){
             cout_mtx_.unlock();
 
             if (distance <= _assocationDistanceThreshold){
+                det->associated = true;
                 track->sendDetection(det);
-                // _newDetections.remove(det);    
+                cout_mtx_.lock();
+                std::cout<<" ********REMOVING! _newDetections.size()"<<_newDetections.size() <<std::endl;
+                cout_mtx_.unlock();    
+                std::cout<<" ********REMOVED! _newDetections.size()"<<_newDetections.size() <<std::endl;
             }
 
             ++j;
@@ -64,9 +68,11 @@ void TrackerManager::createNewTracks(){
 
     for (auto &newDet: _newDetections){
         // For each remaining unassociated detection, start a new track
-        std::shared_ptr<TrackedObject> newTrack = std::make_shared<TrackedObject>(newDet);
-        _tracks.push_back(newTrack);
-        _threads.emplace_back(std::thread(&TrackedObject::run, newTrack));
+        if (!newDet->associated){
+            std::shared_ptr<TrackedObject> newTrack = std::make_shared<TrackedObject>(newDet);
+            _tracks.push_back(newTrack);
+            _threads.emplace_back(std::thread(&TrackedObject::run, newTrack));
+        }
     }
 }
 

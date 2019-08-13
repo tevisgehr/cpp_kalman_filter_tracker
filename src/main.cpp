@@ -29,19 +29,20 @@ std::vector<std::vector<int>> readDataFile(std::string filepath){
 
 int main(){
     // Open connection to file, read read detections into 'data' vector
-    std::string filepath = "../data/test_data2.txt";
+    std::string filepath = "../data/test_data1.txt";
     std::vector<std::vector<int>> data = readDataFile(filepath);
 
     // //print out data vector --TEST ONLY ########################
-    // for (auto row : data){
-    //     for (auto num : row ){
-    //         std::cout << num << ' ';
-    //     }
-    //     std::cout<<std::endl;
-    // }
+
+    for (auto row : data){
+        for (auto num : row ){
+            std::cout << num << ' ';
+        }
+        std::cout<<std::endl;
+    }
     // // #########################################################
         
-
+    std::cout<<"data.size() : "<<data.size()<<std::endl;
 
     // Instantiate TrackerManager
     TrackerManager manager;
@@ -64,12 +65,12 @@ int main(){
         manager.setNewDetections(idx,frameDetections);
 
         //print out frameDetections vector --TEST ONLY ########################
-        for (auto det : frameDetections){
-            for (auto num : det ){
-                std::cout << num << ' ';
-            }
-            std::cout<<std::endl;
-        }
+        // for (auto det : frameDetections){
+        //     for (auto num : det ){
+        //         std::cout << num << ' ';
+        //     }
+        //     std::cout<<std::endl;
+        // }
         // #########################################################
 
         // 2. Associate detections (measurements) to existing tracks

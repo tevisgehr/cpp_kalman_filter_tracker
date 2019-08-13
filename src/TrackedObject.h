@@ -13,6 +13,7 @@ struct Detection{
     int x1, x2, y1, y2;
     float x_mid, y_mid;
     int frameId;
+    bool associated = false;
 };
 
 template <class T>
@@ -44,7 +45,11 @@ public:
     float measureDistance(std::shared_ptr<Detection>);
 
     MessageQueue<std::shared_ptr<Detection>> _detectionQueue;
-    void sendDetection(std::shared_ptr<Detection> &);
+    // void sendDetection(std::shared_ptr<Detection> &);
+    void sendDetection(std::shared_ptr<Detection>);
+
+    // Overloading == to allow for use of std::list::remove()
+    bool operator == (const TrackedObject& o) const { return _id == o._id; }
 
 private:
     static int _idCount;   // Static member increments in constructor and ensures unique _id for each object

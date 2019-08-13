@@ -26,7 +26,11 @@ void MessageQueue<T>::send(T &&msg)
     _cond.notify_one();
 }
 
-void TrackedObject::sendDetection(std::shared_ptr<Detection> &det){
+// void TrackedObject::sendDetection(std::shared_ptr<Detection> &det){
+//     _detectionQueue.send(std::move(det));
+// }
+
+void TrackedObject::sendDetection(std::shared_ptr<Detection> det){
     _detectionQueue.send(std::move(det));
 }
 
