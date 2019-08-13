@@ -48,8 +48,7 @@ public:
     // void sendDetection(std::shared_ptr<Detection> &);
     void sendDetection(std::shared_ptr<Detection>);
 
-    // Overloading == to allow for use of std::list::remove()
-    bool operator == (const TrackedObject& o) const { return _id == o._id; }
+    bool _associated = false;
 
 private:
     static int _idCount;   // Static member increments in constructor and ensures unique _id for each object

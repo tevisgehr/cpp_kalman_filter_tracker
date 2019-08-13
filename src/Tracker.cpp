@@ -37,6 +37,7 @@ void TrackerManager::associate(){
             cout_mtx_.unlock();
         int j = 0;
         for (auto &track: _tracks){
+            track->_associated = false;
             cout_mtx_.lock();
             std::cout<<"!!!Track!!!: "<<track->_id<<std::endl;
             cout_mtx_.unlock();
@@ -48,10 +49,12 @@ void TrackerManager::associate(){
 
             if (distance <= _assocationDistanceThreshold){
                 det->associated = true;
+                track->_associated = true;
                 track->sendDetection(det);
                 cout_mtx_.lock();
                 std::cout<<" ********Detection associated! "<<std::endl;
                 cout_mtx_.unlock();    
+                break;
 
             }
 

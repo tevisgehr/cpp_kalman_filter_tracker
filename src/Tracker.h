@@ -22,7 +22,7 @@ public:
     void prune();
 
     // ################### Settings ###################
-    const float _assocationDistanceThreshold = 10;
+    const float _assocationDistanceThreshold = 15;
     const int _maxCoastCount = 3;
     // ################################################
 
