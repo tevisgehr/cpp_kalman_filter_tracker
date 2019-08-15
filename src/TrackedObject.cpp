@@ -56,13 +56,24 @@ void TrackedObject::timeUpdate(){
     // Predict state transition
     _X = _A*_X;
 
-    //Update state covariance 
+    //Update Error covariance matrix
     _P = _A*(_P*_A.transpose()) + _Q;
 
 }
 
 void TrackedObject::measurementUpdate(){
+    cout_mtx_.lock();
+    std::cout<<"Object ID:"<<_id<<" measurementUpdate()" << std::endl;
+    cout_mtx_.unlock();
+    
+    // Compute Kalman Gain
+    auto _K = _P * _H.transpose() * (_H * _P * _H.transpose() + _R).inverse();
 
+    // Fuse new measurement
+    _X = _X + _K * (_Z - _H*_X);
+
+    // Update Error covariance matrix
+    _P = (Eigen::Matrix<float,6,6>::Identity() - _K * _H) * _P;
 }
 
 void TrackedObject::sendDetection(std::shared_ptr<Detection> det){
@@ -150,6 +161,11 @@ void TrackedObject::run(){
             cout_mtx_.lock();
             std::cout<<"Track #"<<_id<<" received Message!!!!! det at: ("<<newDetection->x_mid<<","<<newDetection->y_mid<<")"<< std::endl;
             cout_mtx_.unlock();
+
+            // Load new measurment into z
+            _Z <<  newDetection->x_mid,newDetection->y_mid;
+
+            measurementUpdate();
         }
 
         // Prune if track has been coasting too long

@@ -75,9 +75,9 @@ private:
 
     // Process covariance matrix
     Eigen::Matrix<float, 6, 6> _Q;
-    
-    // Kalman gain matrix
-    Eigen::Matrix<float, 6, 6> _K;
+
+    // Measurement vector
+    Eigen::Matrix<float, 2, 1> _Z;
 
     void timeUpdate();
     void measurementUpdate();
