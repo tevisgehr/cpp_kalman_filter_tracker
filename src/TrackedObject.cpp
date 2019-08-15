@@ -50,6 +50,16 @@ void MessageQueue<T>::send(T &&msg)
     _cond.notify_one();
 }
 
+void TrackedObject::timeUpdate(){
+    cout_mtx_.lock();
+    std::cout<<"Object ID:"<<_id<<" timeUpdate()" << std::endl;
+    cout_mtx_.unlock();
+
+
+}
+
+void TrackedObject::measurementUpdate(){}
+
 void TrackedObject::sendDetection(std::shared_ptr<Detection> det){
     _detectionQueue.send(std::move(det));
 }
@@ -64,9 +74,18 @@ TrackedObject::TrackedObject(std::shared_ptr<Detection> newDet) : _id(_idCount) 
 }
 
 void TrackedObject::run(){
-    while (true){
+    while (_state != terminated){    
         cout_mtx_.lock();
-        std::cout<<"Object ID:"<<_id<<" Main loop. Receiving message..." << std::endl;
+        std::cout<<"Object ID:"<<_id<<" Main loop." << std::endl;
+        cout_mtx_.unlock();
+        
+        // Run predict step of Kalman filter
+        if (_state != init){
+            timeUpdate();
+        }
+
+        cout_mtx_.lock();
+        std::cout<<"Object ID:"<<_id<<"Receiving message..." << std::endl;
         cout_mtx_.unlock();
 
         auto newDetection = _detectionQueue.receive();
@@ -91,13 +110,13 @@ void TrackedObject::run(){
             if (_state == init){
                 float vxEstimate = newDetection->x_mid - _X(0);
                 float vyEstimate = newDetection->y_mid - _X(1);
+
+                _X(2) = vxEstimate;
+                _X(3) = vyEstimate;
             }
 
             _state = active;
             _coastedFrames = 0;
-
-
-
 
             cout_mtx_.lock();
             std::cout<<"Track #"<<_id<<" received Message!!!!! det at: ("<<newDetection->x_mid<<","<<newDetection->y_mid<<")"<< std::endl;
@@ -123,9 +142,6 @@ void TrackedObject::run(){
         cout_mtx_.unlock();
     }
 }
-
-void TrackedObject::timeUpdate(){}
-void TrackedObject::measurementUpdate(){}
 
 float TrackedObject::measureDistance(std::shared_ptr<Detection> det){
     return std::sqrt(std::pow((det->x_mid-_X(0)),2)+std::pow((det->y_mid-_X(1)),2));
