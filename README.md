@@ -26,13 +26,13 @@ Data is read in from a file. Four example files are included in the data/ folder
 
 - Each row represents all of the bounding box detection from a single frame. Each row consists of multiples of four floats. The floats corrospond to the ( x1, x2, y1, y2 ) coordiates of the detection bounding boxes. Example:
 
-row 1: 10.0 20.0 50.0 60.0        
-(frame 1: one detection at x1: 10.0, x2: 20.0, y1: 50.0 y2:60.0)
-row 2:
-(frame 2: no detections)
-row 3: 11.0 21.0 51.0 61.0 35.5 46.6 78.9 99.8
-(frame 3: two detections)
-...
+row 1: 10.0 20.0 50.0 60.0                        (frame 1: one detection at x1: 10.0, x2: 20.0, y1: 50.0 y2:60.0) 
+ 
+row 2:                                            (frame 2: no detections) 
+ 
+row 3: 11.0 21.0 51.0 61.0 35.5 46.6 78.9 99.8    (frame 3: two detections) 
+ 
+... 
 
 
 
