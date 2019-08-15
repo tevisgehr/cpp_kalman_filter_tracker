@@ -32,18 +32,6 @@ int main(){
     std::string filepath = "../data/test_data4.txt";
     std::vector<std::vector<float>> data = readDataFile(filepath);
 
-    // //print out data vector --TEST ONLY ########################
-    // for (auto row : data){
-    //     for (auto num : row ){
-    //         std::cout << num << ' ';
-    //     }
-    //     std::cout<<std::endl;
-    // }
-    // std::cout<<"data.size() : "<<data.size()<<std::endl;
-    // // #########################################################
-        
-
-
     // Instantiate TrackerManager
     TrackerManager manager;
 
@@ -63,16 +51,7 @@ int main(){
             frameDetections.push_back(det);
         }
         manager.setNewDetections(idx,frameDetections);
-
-        //print out frameDetections vector --TEST ONLY ########################
-        // for (auto det : frameDetections){
-        //     for (auto num : det ){
-        //         std::cout << num << ' ';
-        //     }
-        //     std::cout<<std::endl;
-        // }
-        // #########################################################
-
+        
         // 2. Associate detections (measurements) to existing tracks
         manager.associate();
         // Modifies _newDetections, only unassociated new detections remain

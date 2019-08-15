@@ -1,6 +1,39 @@
 # C++ Kalman Filter Tracker
 
-This repo is a C++ implimentation of a Kalman filter for multiple visual object tracking. The tracker reads in frame-synchronised bounding boxes from an object detector (such as SSD or Faster-RCNN). Each object is tracked asychronously. At each new frame, the tracker manager reads in frame detections and associates them with existing track. Associated detections are sent to corropsonding track threads via an async message queue class. 
+This repo is a C++ implimentation of a Kalman filter for multiple visual object tracking. The tracker reads in frame-synchronised bounding boxes from an object detector (such as SSD or Faster-RCNN). Each object is tracked asychronously. At each new frame, the tracker manager reads in frame detections and associates them with existing tracks. Associated detections are sent to corrosponding track threads via an async message queue class. 
+
+This project was done as my capstone for Udacity's C++ nanodegree program.  
+
+## Installation and Usage
+To install, compile and run this repo, follow these steps:
+1. Clone this repo.
+2. The Kalman filter matrix operations make use of the open source 'Eigen' library. Installing Eigen is simple. First download the source files (http://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2). Untar the package. Then copy the contained 'Eigen' directory into this repo under src/. This will include all required header files into your project.
+3. From project root directory, run the following:
+ 
+``` mkdir build && cd build ```
+ 
+``` cmake .. ```
+ 
+``` make```
+ 
+
+The traker is now installed an compiled. Run from build by running:
+ 
+``` ./tracker```
+
+## Input Data
+Data is read in from a file. Four example files are included in the data/ folder. The choise of input file can be changed inside main.cpp at compile-time. The format for data files is as follows:
+
+- Each row represents all of the bounding box detection from a single frame. Each row consists of multiples of four floats. The floats corrospond to the ( x1, x2, y1, y2 ) coordiates of the detection bounding boxes. Example:
+
+row 1: 10.0 20.0 50.0 60.0        
+(frame 1: one detection at x1: 10.0, x2: 20.0, y1: 50.0 y2:60.0)
+row 2:
+(frame 2: no detections)
+row 3: 11.0 21.0 51.0 61.0 35.5 46.6 78.9 99.8
+(frame 3: two detections)
+...
+
 
 
 ## Classes and Structs
@@ -70,3 +103,19 @@ This class impliments an asychronous message queue to pass detection objects bet
 - _mutex (std::mutex)
 - _cond (std::condition_variable)
 - _queue (std::deque<T>)
+
+
+## Rubric Points
+- "The project demonstrates an understanding of C++ functions and control structures." - Throughout program
+- "The project reads data from a file and process the data, or the program writes data to a file." - main.cpp:33
+- "The project uses Object Oriented Programming techniques." - Throughout program
+- "Classes use appropriate access specifiers for class members." - TrackedObject.h:38-82
+- "Class constructors utilize member initialization lists." - TrackedObject.cpp:83
+- "Classes abstract implementation details from their interfaces." - Throughout program
+- "Classes encapsulate behavior." - Throughout program
+- "Templates generalize functions in the project." - TrackedObject.cpp:25
+- "The project uses move semantics to move data, instead of copying it, where possible." - TrackedObject.cpp:80
+- "The project uses smart pointers instead of raw pointers." - Throughout program
+- "The project uses multithreading." - Throughout program
+- "A mutex or lock is used in the project." - Throughout program
+- "A condition variable is used in the project." - TrackedObject.h:34
