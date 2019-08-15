@@ -8,22 +8,26 @@
 int TrackedObject::_idCount = 0;
 
 //Initialize state transition matrix
-Eigen::Matrix4f TrackedObject::_A = [] {
-    Eigen::Matrix4f tmp;
-    tmp <<  1,0,1,0,
-            0,1,0,1,
-            0,0,1,0,
-            0,0,0,1;
+Eigen::Matrix<float, 6, 6> TrackedObject::_A = [] {
+    Eigen::Matrix<float, 6, 6> tmp;
+    tmp <<  1,0,1,0,0,0,
+            0,1,0,1,0,0,
+            0,0,1,0,1,0,
+            0,0,0,1,0,1,
+            0,0,0,0,0,0,
+            0,0,0,0,0,0;
     return tmp;
 }();
 
 //Initialize measurement matrix
-Eigen::Matrix4f TrackedObject::_H = [] {
-    Eigen::Matrix4f tmp;
-    tmp <<  1,0,0,0,
-            0,1,0,0,
-            0,0,0,0,
-            0,0,0,0;
+Eigen::Matrix<float, 6, 6> TrackedObject::_H = [] {
+    Eigen::Matrix<float, 6, 6> tmp;
+    tmp <<  1,0,0,0,0,0,
+            0,1,0,0,0,0,
+            0,0,0,0,0,0,
+            0,0,0,0,0,0,
+            0,0,0,0,0,0,
+            0,0,0,0,0,0;
     return tmp;
 }();
 
@@ -56,11 +60,7 @@ TrackedObject::TrackedObject(std::shared_ptr<Detection> newDet) : _id(_idCount) 
     std::cout<<_id<<"Creating new tracked object from detection at: ("<<newDet->x_mid<<","<<newDet->y_mid<<")"<< std::endl;
     cout_mtx_.unlock();
 
-    _X.resize(2,2);
-    _X(0,0) = newDet->x_mid;
-    _X(1,0) = 0;
-    _X(0,1) = newDet->y_mid;
-    _X(1,1) = 0;
+    _X <<  newDet->x_mid,newDet->y_mid,0,0,0,0;
 }
 
 void TrackedObject::run(){
@@ -72,28 +72,55 @@ void TrackedObject::run(){
         auto newDetection = _detectionQueue.receive();
 
         if (newDetection == nullptr){
-            _state = coast;
-            ++_coastedFrames;
-
+            // If there is no new detection associated while the track is still in init phase, terminate it
+            if (_state == init){
+                _state = terminated;
+            }
+            else{
+                _state = coast;
+                ++_coastedFrames;
+            }
+            
             cout_mtx_.lock();
             std::cout<<"Track #"<<_id<<" received Message!!!!! nullptr... coasting. _coastedFrames: "<< _coastedFrames << std::endl;
             cout_mtx_.unlock();
         }
         else {
+            // if this is the first associated detection when the tract is still in the init phase, 
+            // initalize the velocity eimste
+            if (_state == init){
+                float vxEstimate = newDetection->x_mid - _X(0);
+                float vyEstimate = newDetection->y_mid - _X(1);
+            }
+
             _state = active;
             _coastedFrames = 0;
+
+
+
 
             cout_mtx_.lock();
             std::cout<<"Track #"<<_id<<" received Message!!!!! det at: ("<<newDetection->x_mid<<","<<newDetection->y_mid<<")"<< std::endl;
             cout_mtx_.unlock();
         }
 
+
+
+        // Prune if track has been coasting too long
         if (_coastedFrames > _maxCoastCount){
             _state = terminated;
             cout_mtx_.lock();
             std::cout<<"Track #"<<_id<<" Terminated."<< std::endl;
             cout_mtx_.unlock();
         }
+
+        cout_mtx_.lock();
+        std::cout<<std::endl << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " << std::endl;
+        std::cout<<"%%%%%%%%%%% TRACKID: "<<_id<<" ---------> END OF THREAD LOOP " << std::endl;
+        std::cout<<"%%%%%%%%%%% _X: "<< std::endl<<_X << std::endl;
+        std::cout<<"%%%%%%%%%%% _state: "<<_state << std::endl;
+        std::cout<<"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " << std::endl << std::endl;
+        cout_mtx_.unlock();
     }
 }
 
@@ -101,5 +128,5 @@ void TrackedObject::timeUpdate(){}
 void TrackedObject::measurementUpdate(){}
 
 float TrackedObject::measureDistance(std::shared_ptr<Detection> det){
-    return std::sqrt(std::pow((det->x_mid-_X(0,0)),2)+std::pow((det->y_mid-_X(0,1)),2));
+    return std::sqrt(std::pow((det->x_mid-_X(0)),2)+std::pow((det->y_mid-_X(1)),2));
     }
