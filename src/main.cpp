@@ -9,15 +9,15 @@
 
 std::mutex cout_mtx_;
 
-std::vector<std::vector<int>> readDataFile(std::string filepath){
-    std::vector<std::vector<int>> data;
+std::vector<std::vector<float>> readDataFile(std::string filepath){
+    std::vector<std::vector<float>> data;
     std::ifstream file(filepath);
     std::string line;
     while(std::getline(file, line))
     {
-        std::vector<int>   lineData;
+        std::vector<float>   lineData;
         std::stringstream  lineStream(line);
-        int value;
+        float value;
         while(lineStream >> value)
         {
             lineData.push_back(value);
@@ -29,8 +29,8 @@ std::vector<std::vector<int>> readDataFile(std::string filepath){
 
 int main(){
     // Open connection to file, read read detections into 'data' vector
-    std::string filepath = "../data/test_data3.txt";
-    std::vector<std::vector<int>> data = readDataFile(filepath);
+    std::string filepath = "../data/test_data4.txt";
+    std::vector<std::vector<float>> data = readDataFile(filepath);
 
     // //print out data vector --TEST ONLY ########################
     // for (auto row : data){
@@ -52,11 +52,11 @@ int main(){
     while (!manager._shutdown){
 
         // 1. Read in frame detections
-        std::vector<std::vector<int>> frameDetections;
+        std::vector<std::vector<float>> frameDetections;
         int numDetections = data[idx].size() / 4;
         std::cout<<"Frame idx:"<< idx << " numDetections:"<< numDetections <<std::endl;
         for (int n = 0; n < numDetections; ++n){
-            std::vector<int> det;
+            std::vector<float> det;
             for (int j = 0; j < 4; ++j){
                 det.push_back(data[idx][(4*n) + j]);
             }

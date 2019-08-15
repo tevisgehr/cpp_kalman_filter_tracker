@@ -7,7 +7,7 @@
 
 TrackerManager::TrackerManager(){}
 
-void TrackerManager::setNewDetections(int idx, std::vector<std::vector<int>> incomingFrameDetections){
+void TrackerManager::setNewDetections(int idx, std::vector<std::vector<float>> incomingFrameDetections){
     cout_mtx_.lock();
     std::cout<<"Running setNewDetections()."<<std::endl;
     cout_mtx_.unlock();

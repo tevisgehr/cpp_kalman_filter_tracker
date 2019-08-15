@@ -16,7 +16,7 @@ public:
     TrackerManager();
     bool _shutdown = false;
 
-    void setNewDetections(int, std::vector<std::vector<int>>);
+    void setNewDetections(int, std::vector<std::vector<float>>);
     void associate();
     void createNewTracks();
 
