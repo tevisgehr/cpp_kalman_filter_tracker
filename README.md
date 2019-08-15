@@ -17,24 +17,35 @@ This repo is a C++ implimentation of a Kalman filter for multiple visual object 
 - _tracks (list< shared_ptr<TrackedObjects >) - list of tracked objects
 - _newDetections (list< shared_ptr<Detection> >) - Temporary storage for new frame detections
 - _shutdown (bool) - Set true to shutdown the tracker
-
+ 
 Settings (constants) :
 - _assocationDistanceThreshold (float) - max distance between a track state and new detection that will resut in a positive association.
-- _maxCoastCount (int) - number of coasted frames allowed before a track is killed by prune()
 
 ### TrackedObject
 #### Methods:
-- run()
-- timeUpdate()
-- measurementUpdate()
+- run() - Main loop run by thread for each track
+- timeUpdate() - Time update (prediction step of Kalman filter)
+- measurementUpdate() - Measurement update (correction step of Kalman filter)
 - getStateEstimate() - Getter function used to access the current state estimate. Used for association and visualization. 
 - measureDistance() - Returns the distance between its current location estimate and an incoming Detection object.
+- sendDetection() - Sends a Detection object to the message queue for this object
 #### Data:
-- _A Eigen::MatrixXd (2x2)) - State transition matrix (static) 
-- _H Eigen::MatrixXd (2x2)) - Measurement matrix (static) 
+- _A Eigen::MatrixXd (6x6)) - State transition matrix (static) 
+- _H Eigen::MatrixXd (2x6)) - Measurement matrix (static) 
 - _state (enum State) - 'init', 'active', 'coast', or 'terminated' 
-- _X (Eigen::MatrixXd (2x2)) - State estimate matrix [[x,y],[v_x,v_y]] 
-- _P (Eigen::MatrixXd (2x2)) - Error covatiance matrix
+- _coastedFrames (int) - number of frames since the tracked object has had a positive measurement (detection) association
+- _X (Eigen::MatrixXd (6x1)) - State estimate vector [x,y,v_x,v_y,a_x,a_y] 
+- _P (Eigen::MatrixXd (6x6)) - Error covariance matrix
+- _R (Eigen::MatrixXd (2x2)) - Measurement covariance matrix
+- _Q (Eigen::MatrixXd (6x6)) - Process covariance matrix
+- _Z (Eigen::MatrixXd (2x1)) - Measurement vector
+- _detectionQueue ( MessageQueue< std::shared_ptr<Detection> > ) - Each TrackedObject instance has its own MessageQueue instance for communicating detections between main  thread and track thread
+
+Settings (constants):
+- _maxCoastCount (int) - number of coasted frames allowed before a track is killed
+- _initalErrorCovariance - inital value for diagonal entries in error covariance matrix
+-  _processVariance - Assumed system process variance
+-  _measurmantVariance - Assumed system measurement variance
 
 ### Detection(struct)
 This struct holds the information that has been passed into the program from the detector. Each object represents a single detection.
