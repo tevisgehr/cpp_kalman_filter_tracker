@@ -29,7 +29,7 @@ std::vector<std::vector<int>> readDataFile(std::string filepath){
 
 int main(){
     // Open connection to file, read read detections into 'data' vector
-    std::string filepath = "../data/test_data1.txt";
+    std::string filepath = "../data/test_data3.txt";
     std::vector<std::vector<int>> data = readDataFile(filepath);
 
     // //print out data vector --TEST ONLY ########################

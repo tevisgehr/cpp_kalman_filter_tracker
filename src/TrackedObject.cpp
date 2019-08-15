@@ -20,16 +20,14 @@ Eigen::Matrix<float, 6, 6> TrackedObject::_A = [] {
 }();
 
 //Initialize measurement matrix
-Eigen::Matrix<float, 6, 6> TrackedObject::_H = [] {
-    Eigen::Matrix<float, 6, 6> tmp;
+Eigen::Matrix<float, 2, 6> TrackedObject::_H = [] {
+    Eigen::Matrix<float, 2, 6> tmp;
     tmp <<  1,0,0,0,0,0,
-            0,1,0,0,0,0,
-            0,0,0,0,0,0,
-            0,0,0,0,0,0,
-            0,0,0,0,0,0,
-            0,0,0,0,0,0;
+            0,1,0,0,0,0;
     return tmp;
 }();
+
+
 
 template <typename T>
 T MessageQueue<T>::receive()
@@ -55,10 +53,17 @@ void TrackedObject::timeUpdate(){
     std::cout<<"Object ID:"<<_id<<" timeUpdate()" << std::endl;
     cout_mtx_.unlock();
 
+    // Predict state transition
+    _X = _A*_X;
+
+    //Update state covariance 
+    _P = _A*(_P*_A.transpose()) + _Q;
 
 }
 
-void TrackedObject::measurementUpdate(){}
+void TrackedObject::measurementUpdate(){
+
+}
 
 void TrackedObject::sendDetection(std::shared_ptr<Detection> det){
     _detectionQueue.send(std::move(det));
@@ -70,7 +75,28 @@ TrackedObject::TrackedObject(std::shared_ptr<Detection> newDet) : _id(_idCount) 
     std::cout<<_id<<"Creating new tracked object from detection at: ("<<newDet->x_mid<<","<<newDet->y_mid<<")"<< std::endl;
     cout_mtx_.unlock();
 
+    // Initialize state vector with inital position
     _X <<  newDet->x_mid,newDet->y_mid,0,0,0,0;
+
+    // Initialize Error Covariance matrix
+    _P << _initalErrorCovariance,0,0,0,0,0,
+          0,_initalErrorCovariance,0,0,0,0,
+          0,0,_initalErrorCovariance,0,0,0,
+          0,0,0,_initalErrorCovariance,0,0,
+          0,0,0,0,_initalErrorCovariance,0,
+          0,0,0,0,0,_initalErrorCovariance;
+
+    // Initialize Measurement Covariance matrix
+    _R << _measurmantVariance,0,
+          0,_measurmantVariance;
+
+    // Initialize Process Covariance matrix
+    _Q << _processVariance,0,0,0,0,0,
+          0,_processVariance,0,0,0,0,
+          0,0,_processVariance,0,0,0,
+          0,0,0,_processVariance,0,0,
+          0,0,0,0,_processVariance,0,
+          0,0,0,0,0,_processVariance;
 }
 
 void TrackedObject::run(){
@@ -113,6 +139,9 @@ void TrackedObject::run(){
 
                 _X(2) = vxEstimate;
                 _X(3) = vyEstimate;
+
+                // Run first time update to catch up
+                timeUpdate();
             }
 
             _state = active;
@@ -122,8 +151,6 @@ void TrackedObject::run(){
             std::cout<<"Track #"<<_id<<" received Message!!!!! det at: ("<<newDetection->x_mid<<","<<newDetection->y_mid<<")"<< std::endl;
             cout_mtx_.unlock();
         }
-
-
 
         // Prune if track has been coasting too long
         if (_coastedFrames > _maxCoastCount){

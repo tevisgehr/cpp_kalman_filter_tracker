@@ -41,6 +41,9 @@ public:
 
     // ################### Settings ###################
     const int _maxCoastCount = 3;
+    const float _initalErrorCovariance = 1.0;
+    const float _processVariance = 1.0;
+    const float _measurmantVariance = 1.0;
     // ################################################
 
     TrackedObject(std::shared_ptr<Detection>);
@@ -56,13 +59,25 @@ private:
     static int _idCount;   // Static member increments in constructor and ensures unique _id for each object
 
     static Eigen::Matrix<float, 6, 6> _A; //State transition matrix (static)
-    static Eigen::Matrix<float, 6, 6> _H; //Measurement matrix (static)
+    static Eigen::Matrix<float, 2, 6> _H; //Measurement matrix (static)
 
     State _state = init;
     int _coastedFrames = 0;
 
+    // State estimate vector
     Eigen::Matrix<float, 6, 1> _X;
-    Eigen::Matrix2f _P;
+
+    // Error covariance matrix
+    Eigen::Matrix<float, 6, 6> _P;
+    
+    // Measurement covariance matrix 
+    Eigen::Matrix<float, 2, 2> _R;
+
+    // Process covariance matrix
+    Eigen::Matrix<float, 6, 6> _Q;
+    
+    // Kalman gain matrix
+    Eigen::Matrix<float, 6, 6> _K;
 
     void timeUpdate();
     void measurementUpdate();
