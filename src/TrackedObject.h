@@ -51,12 +51,11 @@ public:
     std::vector<float> getStateEstimate(); //Getter function returns {x, y, v_x, v_y} for track.
     State getState(){return _state;}
     float measureDistance(std::shared_ptr<Detection>);
-
-    MessageQueue<std::shared_ptr<Detection>> _detectionQueue;
     void sendDetection(std::shared_ptr<Detection>);
 
 private:
     static int _idCount;   // Static member increments in constructor and ensures unique _id for each object
+    MessageQueue<std::shared_ptr<Detection>> _detectionQueue;
 
     static Eigen::Matrix<float, 6, 6> _A; //State transition matrix (static)
     static Eigen::Matrix<float, 2, 6> _H; //Measurement matrix (static)
