@@ -119,3 +119,5 @@ This class impliments an asychronous message queue to pass detection objects bet
 - "The project uses multithreading." - Throughout program
 - "A mutex or lock is used in the project." - Throughout program
 - "A condition variable is used in the project." - TrackedObject.h:34
+
+** Important Note: Several examples from the C++ nanodegree coursework were adapted for this project. In particular the message queue object, as covered in the concurrencey course, was adapted. I therefore give credit to Udacity for the code that impliments the MessageQueue class, as I made only minor modifications. Furthermore, I use the Eigen libraries for matrix math, which are open source. **    
